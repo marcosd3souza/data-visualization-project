@@ -1,0 +1,17 @@
+h1, h2, h3 {
+    margin: unset;
+}
+#container {
+    display: flex;
+    justify-content: space-around;
+}
+
+#content {
+    width: 80%;
+}
+
+#graph {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}

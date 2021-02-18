@@ -4,125 +4,128 @@
 		<meta charset="utf-8">
 		<title>D3: Force layout</title>
 		<script src="https://d3js.org/d3.v6.min.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="./styles/tab.css"></style>
+		<link rel="stylesheet" type="text/css" href="./styles/main.css"></style>
 
-		<style type="text/css">
-			/* No style rules here yet */
-		</style>
+		<div style="text-align: center;">
+			<h1>Projeto Visualização de Dados</h1>
+			<h2>Cin UFPE - 2020.2</h2>
+			<h3>Marcos de Souza Oliveira</h3>
+		</div>
+
 	</head>
 	<body>
-		<script type="text/javascript">
-
-function dragStarted(event, d) {
-    force.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
-  }
-  
-  function dragging(event, d) {
-    d.fx = event.x;
-    d.fy = event.y;
-  }
-  
-  function dragEnded(event, d) {
-    //force.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
-  }
-
-			//Width and height
-			var w = 500;
-			var h = 300;
-
-			//Original data
-			var dataset = {
-				nodes: [
-					{ name: "Adam" },
-					{ name: "Bob" },
-					{ name: "Carrie" },
-					{ name: "Donovan" },
-					{ name: "Edward" },
-					{ name: "Felicity" },
-					{ name: "George" },
-					{ name: "Hannah" },
-					{ name: "Iris" },
-					{ name: "Jerry" }
-				],
-				edges: [
-					{ source: 0, target: 1 },
-					{ source: 0, target: 2 },
-					{ source: 0, target: 3 },
-					{ source: 0, target: 4 },
-					{ source: 1, target: 5 },
-					{ source: 2, target: 5 },
-					{ source: 2, target: 5 },
-					{ source: 3, target: 4 },
-					{ source: 5, target: 8 },
-					{ source: 5, target: 9 },
-					{ source: 6, target: 7 },
-					{ source: 7, target: 8 },
-					{ source: 8, target: 9 }
-				]
-			};
-
-			//Initialize a simple force layout, using the nodes and edges in dataset
-			var force = d3.forceSimulation(dataset.nodes)
-						  .force("charge", d3.forceManyBody())
-						  .force("link", d3.forceLink(dataset.edges))
-//						  .force("center", d3.forceCenter().x(w/2).y(h/2));
-                            .force("center", d3.forceCenter().x(100).y(200));
-
-			var colors = d3.scaleOrdinal(d3.schemeCategory10);
-
-			//Create SVG element
-			var svg = d3.select("body")
-						.append("svg")
-						.attr("width", w)
-						.attr("height", h);
+		<div id="container">
+			<div id="menu">
+				<div>
+					<h4>Opções</h4>
+				</div>
+				
+				<div>
+					<p>Selecione o dataset</p>
+					
+					<input type="radio" checked name="dataset" id="warpAR10P" value="warpAR10P">
+					<label for="warpAR10P">
+						warpAR10P (130x2400)
+					</label>
+				
+					<br>
+				
+					<input type="radio" name="dataset" id="warpPIE10P" value="warpPIE10P">
+					<label for="warpPIE10P">
+						warpPIE10P (210x2420)
+					</label>
+				
+					<br>
+				
+					<input type="radio" name="dataset" id="pixraw10P" value="pixraw10P">
+					<label for="pixraw10P">
+						pixraw10P (100x10000)
+					</label>
+				</div>
+				
+				<div>
+					<p>Selecione o método de seleção/redução:</p>
+					
+					<input type="radio" name="method" id="PCA" value="PCA">
+					<label for="PCA">
+						PCA
+					</label>
+					
+					<br>
+					
+					<input type="radio" name="method" id="LDA" value="LDA">
+					<label for="LDA">
+						LDA
+					</label>
+					
+					<br>
+					
+					<input type="radio" name="method" id="TSNE" value="TSNE">
+					<label for="TSNE">
+						T-SNE
+					</label>
+					
+					<br>
+					
+					<input type="radio" checked name="method" id="LS" value="LS">
+					<label for="LS">
+						Laplace Score
+					</label>
+					
+					<br>
+					
+					<input type="radio" name="method" id="SPEC" value="SPEC">
+					<label for="SPEC">
+						SPEC
+					</label>
+					
+					<br>
+					
+					<input type="radio" name="method" id="idetect" value="idetect">
+					<label for="idetect">
+						i-detect
+					</label>
+				</div>
+				
+				<div>
+					<p>Selecione o número de componentes/features:</p>
+					
+					<input name="cutoff" type="range" value="5" min="5" max="100" step="5" oninput="this.nextElementSibling.value = this.value">
+					<output>5</output>
+				</div>
+			</div>
 			
-			//Create edges as lines
-			var edges = svg.selectAll("line")
-				.data(dataset.edges)
-				.enter()
-				.append("line")
-				.style("stroke", "#ccc")
-				.style("stroke-width", 1);
-			
-			//Create nodes as circles
-			var nodes = svg.selectAll("circle")
-				.data(dataset.nodes)
-				.enter()
-				.append("circle")
-				.attr("r", 10)
-				.style("fill", function(d, i) {
-					return colors(i);
-				})
-                .call(d3.drag()  //Define what to do on drag events
-					.on("start", dragStarted)
-					.on("drag", dragging)
-					.on("end", dragEnded));
-
-			//Add a simple tooltip
-			nodes.append("title")
-				 .text(function(d) {
-					return d.name;
-				 });
-			
-			//Every time the simulation "ticks", this will be called
-			force.on("tick", function() {
-
-				edges.attr("x1", function(d) { return d.source.x; })
-					 .attr("y1", function(d) { return d.source.y; })
-					 .attr("x2", function(d) { return d.target.x; })
-					 .attr("y2", function(d) { return d.target.y; });
-			
-				nodes.attr("cx", function(d) { return d.x; })
-					 .attr("cy", function(d) { return d.y; });
-	
-			});
-
-            
+			<div id="content">
+				
+				<h4>Resultados</h4>
 
 
-		</script>
+				<div class="tab">
+					<button id="default" class="tablinks" onclick="showTabContent(event, 'graph')">Graph</button>
+					<button class="tablinks" onclick="showTabContent(event, 'heat')">HeatMap</button>
+					<button class="tablinks" onclick="showTabContent(event, 'features')">Features</button>
+				</div>
+
+				<div id="graph" class="tabcontent">
+					<!-- <svg></svg> -->
+				</div>
+				  
+				<div id="heat" class="tabcontent">
+					<h3>Paris</h3>
+					<p>Paris is the capital of France.</p> 
+				</div>
+				  
+				<div id="features" class="tabcontent">
+					<h3>Tokyo</h3>
+					<p>Tokyo is the capital of Japan.</p>
+				</div>
+			</div>
+
+		</div>
+		<script src="./scripts/tab.js"></script>
+		<script src="./scripts/graph.js"></script>
+
 	</body>
 </html>
