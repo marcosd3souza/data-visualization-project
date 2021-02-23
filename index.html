@@ -25,21 +25,21 @@
 				<div>
 					<p>Selecione o dataset</p>
 					
-					<input type="radio" checked name="dataset" id="warpAR10P" value="warpAR10P">
+					<input type="radio" checked name="dataset" id="warpAR10P" value="warpAR10P" onclick="onDataChange()">
 					<label for="warpAR10P">
 						warpAR10P (130x2400)
 					</label>
 				
 					<br>
 				
-					<input type="radio" name="dataset" id="warpPIE10P" value="warpPIE10P">
+					<input type="radio" name="dataset" id="warpPIE10P" value="warpPIE10P" onclick="onDataChange()">
 					<label for="warpPIE10P">
 						warpPIE10P (210x2420)
 					</label>
 				
 					<br>
 				
-					<input type="radio" name="dataset" id="pixraw10P" value="pixraw10P">
+					<input type="radio" name="dataset" id="pixraw10P" value="pixraw10P" onclick="onDataChange()">
 					<label for="pixraw10P">
 						pixraw10P (100x10000)
 					</label>
@@ -69,21 +69,21 @@
 					
 					<br>
 					
-					<input type="radio" checked name="method" id="LS" value="LS">
+					<input type="radio" checked name="method" id="LS" value="LS" onclick="onDataChange()">
 					<label for="LS">
 						Laplace Score
 					</label>
 					
 					<br>
 					
-					<input type="radio" name="method" id="SPEC" value="SPEC">
+					<input type="radio" name="method" id="SPEC" value="SPEC" onclick="onDataChange()">
 					<label for="SPEC">
 						SPEC
 					</label>
 					
 					<br>
 					
-					<input type="radio" name="method" id="idetect" value="idetect">
+					<input type="radio" name="method" id="iDetect" value="iDetect" onchange="onDataChange()">
 					<label for="idetect">
 						i-detect
 					</label>
@@ -92,7 +92,13 @@
 				<div>
 					<p>Selecione o número de componentes/features:</p>
 					
-					<input name="cutoff" type="range" value="5" min="5" max="100" step="5" oninput="this.nextElementSibling.value = this.value">
+					<input name="cutoff"
+						   type="range"
+						   value="5"
+						   min="5" max="100" step="5" 
+						   oninput="this.nextElementSibling.value = this.value" 
+						   onclick="onDataChange()">
+
 					<output>5</output>
 				</div>
 			</div>
@@ -112,14 +118,12 @@
 					<!-- <svg></svg> -->
 				</div>
 				  
-				<div id="heat" class="tabcontent">
-					<h3>Paris</h3>
-					<p>Paris is the capital of France.</p> 
+				<div id="heatmap" class="tabcontent">
+					<p>heatMap is building ...</p> 
 				</div>
 				  
 				<div id="features" class="tabcontent">
-					<h3>Tokyo</h3>
-					<p>Tokyo is the capital of Japan.</p>
+					<p>features map is building ...</p>
 				</div>
 			</div>
 
