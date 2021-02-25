@@ -18,18 +18,34 @@ var menuW = document.getElementById("menu").offsetWidth;
 var w = (document.body.offsetWidth + menuW) / 2;
 var h = document.body.offsetHeight;
 
-var datasetName = document.querySelector('input[name="dataset"]:checked').value;
-var method = document.querySelector('input[name="method"]:checked').value;
-var cutoff = document.querySelector('input[name="cutoff"]').value;
 
 //Original data
 var dataURL = "https://raw.githubusercontent.com/marcosd3souza/marcosd3souza.github.io/main/data/"
 
-fetch(dataURL+datasetName+"/"+method+"/"+cutoff+".json")
-  .then(response => response.json())
-  .then(json => draw(json));
+onDataChange()
+
+function onDataChange() {
+
+    d3.select("svg").remove();
+
+    var datasetName = document.querySelector('input[name="dataset"]:checked').value;
+    var method = document.querySelector('input[name="method"]:checked').value;
+    var cutoff = document.querySelector('input[name="cutoff"]').value;
+    
+    fetch(dataURL+datasetName+"/"+method+"/"+cutoff+".json")
+      .then(response => response.json())
+      .then(json => draw(json));
+}
+
 
 function draw(dataset) {
+
+    //Create SVG element
+    var svg = d3.select("#graph")
+                .append("svg")
+                .attr("width", w)
+                .attr("height", h);
+
     //Initialize a simple force layout, using the nodes and edges in dataset
     force = d3.forceSimulation(dataset.nodes)
         .force("charge", d3.forceManyBody())
@@ -38,12 +54,6 @@ function draw(dataset) {
         // .force("center", d3.forceCenter().x(1000).y(500));
     
     var colors = d3.scaleOrdinal(d3.schemeCategory10);
-    
-    //Create SVG element
-    var svg = d3.select("#graph")
-        .append("svg")
-        .attr("width", w)
-        .attr("height", h);
     
     //Create edges as lines
     var edges = svg.selectAll("line")
