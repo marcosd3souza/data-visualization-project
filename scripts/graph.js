@@ -33,7 +33,7 @@ function draw(dataset) {
     //Initialize a simple force layout, using the nodes and edges in dataset
     force = d3.forceSimulation(dataset.nodes)
         .force("charge", d3.forceManyBody())
-        .force("link", d3.forceLink(dataset.edges))
+        .force("link", d3.forceLink(dataset.links))
         .force("center", d3.forceCenter().x(w).y(h));
         // .force("center", d3.forceCenter().x(1000).y(500));
     
@@ -47,7 +47,7 @@ function draw(dataset) {
     
     //Create edges as lines
     var edges = svg.selectAll("line")
-        .data(dataset.edges)
+        .data(dataset.links)
         .enter()
         .append("line")
         .style("stroke", "#ccc")
