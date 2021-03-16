@@ -3,15 +3,17 @@
 	<head>
 		<meta charset="utf-8">
 		<title>D3: Force layout</title>
-		<script src="https://d3js.org/d3.v6.min.js"></script>
+		
+		<!-- <script src="https://d3js.org/d3.v6.min.js"></script> -->
+		<script src="https://d3js.org/d3.v2.min.js" charset="utf-8"></script>
+		
 		
 		<link rel="stylesheet" type="text/css" href="./styles/tab.css"></style>
 		<link rel="stylesheet" type="text/css" href="./styles/main.css"></style>
 
 		<div style="text-align: center;">
-			<h1>Projeto Visualização de Dados</h1>
-			<h2>Cin UFPE - 2020.2</h2>
-			<h3>Marcos de Souza Oliveira</h3>
+			<h2>Projeto Visualização de Dados</h2>
+			<h4>Cin UFPE - 2020.2</h4>
 		</div>
 
 	</head>
@@ -110,7 +112,7 @@
 
 				<div class="tab">
 					<button id="default" class="tablinks" onclick="showTabContent(event, 'graph')">Graph</button>
-					<button class="tablinks" onclick="showTabContent(event, 'heat')">HeatMap</button>
+					<button class="tablinks" onclick="showTabContent(event, 'heatmap')">HeatMap</button>
 					<button class="tablinks" onclick="showTabContent(event, 'features')">Features</button>
 				</div>
 
@@ -118,8 +120,7 @@
 					<!-- <svg></svg> -->
 				</div>
 				  
-				<div id="heatmap" class="tabcontent">
-					<p>heatMap is building ...</p> 
+				<div id="heatmap" class="tabcontent">					
 				</div>
 				  
 				<div id="features" class="tabcontent">
@@ -130,6 +131,11 @@
 		</div>
 		<script src="./scripts/tab.js"></script>
 		<script src="./scripts/graph.js"></script>
+		<script src="./scripts/heatmap.js"></script>
+
+		<div style="text-align: center;">
+			<p>&copy; 2021 https://github.com/marcosd3souza</p>
+		</div>
 
 	</body>
 </html>

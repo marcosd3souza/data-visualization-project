@@ -1,7 +1,11 @@
 // set the dimensions and margins of the graph
-var margin = {top: 80, right: 25, bottom: 30, left: 40},
-  width = 450 - margin.left - margin.right,
-  height = 450 - margin.top - margin.bottom;
+var margin = {top: 30, right: 0, bottom: 10, left: 30},
+    width = window.innerWidth * 0.7,
+    height = window.innerHeight;
+
+var x = d3.scale.ordinal().rangeBands([0, width]),
+    z = d3.scale.linear().domain([0, 4]).clamp(true),
+    c = d3.scale.category10().domain(d3.range(10));
 
 //Original data
 var dataURL = "https://raw.githubusercontent.com/marcosd3souza/marcosd3souza.github.io/main/data/"
@@ -11,108 +15,139 @@ onDataChange()
 
 function onDataChange() {
 
-    d3.select("svg").remove();
+    d3.select("#heatmap").select("*").remove();
 
     var datasetName = document.querySelector('input[name="dataset"]:checked').value;
     var method = document.querySelector('input[name="method"]:checked').value;
     var cutoff = document.querySelector('input[name="cutoff"]').value;
     
-    var fileFetch = dataURL+datasetName+"/"+method+"/"+cutoff+".csv"
-
-    console.log("data fetched: ", fileFetch)
-
-    var filepath = dataURL+"data_reduced.csv"
-    d3.csv(filepath, function(data) {
-
-    // append the svg object to the body of the page
-    var svg = d3.select("#heatmap")
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
-
-    // Labels of row and columns -> unique identifier of the column called 'group' and 'variable'
-    var myGroups = d3.map(data, function(d){return d.group;}).keys()
-    var myVars = d3.map(data, function(d){return d.variable;}).keys()
-
-    // Build X scales and axis:
-    var x = d3.scaleBand()
-        .range([ 0, width ])
-        .domain(myGroups)
-        .padding(0.05);
-    svg.append("g")
-        .style("font-size", 15)
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x).tickSize(0))
-        .select(".domain").remove()
-
-    // Build Y scales and axis:
-    var y = d3.scaleBand()
-        .range([ height, 0 ])
-        .domain(myVars)
-        .padding(0.05);
-    svg.append("g")
-        .style("font-size", 15)
-        .call(d3.axisLeft(y).tickSize(0))
-        .select(".domain").remove()
-
-    // Build color scale
-    var myColor = d3.scaleSequential()
-        .interpolator(d3.interpolateInferno)
-        .domain([1,100])
-
-    // create a tooltip
-    var tooltip = d3.select("#my_dataviz")
-        .append("div")
-        .style("opacity", 0)
-        .attr("class", "tooltip")
-        .style("background-color", "white")
-        .style("border", "solid")
-        .style("border-width", "2px")
-        .style("border-radius", "5px")
-        .style("padding", "5px")
-
-    // Three function that change the tooltip when user hover / move / leave a cell
-    var mouseover = function(d) {
-        tooltip
-        .style("opacity", 1)
-        d3.select(this)
-        .style("stroke", "black")
-        .style("opacity", 1)
-    }
-    var mousemove = function(d) {
-        tooltip
-        .html("The exact value of<br>this cell is: " + d.value)
-        .style("left", (d3.mouse(this)[0]+70) + "px")
-        .style("top", (d3.mouse(this)[1]) + "px")
-    }
-    var mouseleave = function(d) {
-        tooltip
-        .style("opacity", 0)
-        d3.select(this)
-        .style("stroke", "none")
-        .style("opacity", 0.8)
-    }
-
-    // add the squares
-    svg.selectAll()
-        .data(data, function(d) {return d.group+':'+d.variable;})
-        .enter()
-        .append("rect")
-        .attr("x", function(d) { return x(d.group) })
-        .attr("y", function(d) { return y(d.variable) })
-        .attr("rx", 4)
-        .attr("ry", 4)
-        .attr("width", x.bandwidth() )
-        .attr("height", y.bandwidth() )
-        .style("fill", function(d) { return myColor(d.value)} )
-        .style("stroke-width", 4)
-        .style("stroke", "none")
-        .style("opacity", 0.8)
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave)
-    });
+    var filepath = dataURL+datasetName+"/"+method+"/"+cutoff+".json"
+    
+    d3.json(filepath, function(data) {
+        var matrix = [],
+            nodes = data.nodes,
+            n = nodes.length;
+        
+        //Create SVG element
+        var svg = d3.select("#heatmap").append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      
+        // Compute index per node.
+        nodes.forEach(function(node, i) {
+          node.index = i;
+          node.count = 0;
+          matrix[i] = d3.range(n).map(function(j) { return {x: j, y: i, z: 0}; });
+        });
+      
+        // Convert links to matrix; count character occurrences.
+        data.links.forEach(function(link) {
+          matrix[link.source][link.target].z += link.value;
+          matrix[link.target][link.source].z += link.value;
+          matrix[link.source][link.source].z += link.value;
+          matrix[link.target][link.target].z += link.value;
+          nodes[link.source].count += link.value;
+          nodes[link.target].count += link.value;
+        });
+      
+        // Precompute the orders.
+        var orders = {
+          name: d3.range(n).sort(function(a, b) { return d3.ascending(nodes[a].name, nodes[b].name); }),
+          count: d3.range(n).sort(function(a, b) { return nodes[b].count - nodes[a].count; }),
+          group: d3.range(n).sort(function(a, b) { return nodes[b].group - nodes[a].group; })
+        };
+      
+        // The default sort order.
+        x.domain(orders.name);
+      
+        svg.append("rect")
+            .attr("class", "background")
+            .attr("width", width)
+            .attr("height", height);
+      
+        var row = svg.selectAll(".row")
+            .data(matrix)
+          .enter().append("g")
+            .attr("class", "row")
+            .attr("transform", function(d, i) { return "translate(0," + x(i) + ")"; })
+            .each(row);
+      
+        row.append("line")
+            .attr("x2", width);
+      
+        row.append("text")
+            .attr("x", -6)
+            .attr("y", x.rangeBand() / 2)
+            .attr("dy", ".32em")
+            .attr("text-anchor", "end")
+            .text(function(d, i) { return nodes[i].name; });
+      
+        var column = svg.selectAll(".column")
+            .data(matrix)
+          .enter().append("g")
+            .attr("class", "column")
+            .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
+      
+        column.append("line")
+            .attr("x1", -width);
+      
+        column.append("text")
+            .attr("x", 6)
+            .attr("y", x.rangeBand() / 2)
+            .attr("dy", ".32em")
+            .attr("text-anchor", "start")
+            .text(function(d, i) { return nodes[i].name; });
+      
+        function row(row) {
+          var cell = d3.select(this).selectAll(".cell")
+              .data(row.filter(function(d) { return d.z; }))
+            .enter().append("rect")
+              .attr("class", "cell")
+              .attr("x", function(d) { return x(d.x); })
+              .attr("width", x.rangeBand())
+              .attr("height", x.rangeBand())
+              .style("fill-opacity", function(d) { return z(d.z); })
+              .style("fill", function(d) { return nodes[d.x].group == nodes[d.y].group ? c(nodes[d.x].group) : null; })
+              .on("mouseover", mouseover)
+              .on("mouseout", mouseout);
+        }
+      
+        function mouseover(p) {
+          d3.selectAll(".row text").classed("active", function(d, i) { return i == p.y; });
+          d3.selectAll(".column text").classed("active", function(d, i) { return i == p.x; });
+        }
+      
+        function mouseout() {
+          d3.selectAll("text").classed("active", false);
+        }
+      
+        d3.select("#order").on("change", function() {
+          clearTimeout(timeout);
+          order(this.value);
+        });
+      
+        function order(value) {
+          x.domain(orders[value]);
+      
+          var t = svg.transition().duration(2500);
+      
+          t.selectAll(".row")
+              .delay(function(d, i) { return x(i) * 4; })
+              .attr("transform", function(d, i) { return "translate(0," + x(i) + ")"; })
+            .selectAll(".cell")
+              .delay(function(d) { return x(d.x) * 4; })
+              .attr("x", function(d) { return x(d.x); });
+      
+          t.selectAll(".column")
+              .delay(function(d, i) { return x(i) * 4; })
+              .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
+        }
+      
+        var timeout = setTimeout(function() {
+          order("group");
+        //   d3.select("#order").property("selectedIndex", 2).node().focus();
+        }, 3000);
+      });
 }

@@ -10,14 +10,17 @@ var dragging = function (event, d) {
 }
 
 var force;
-
-//Width and height
-var menuW = document.getElementById("menu").offsetWidth;
 // var w = document.getElementById("content").offsetWidth + menuW;
 // var h = document.getElementById("content").offsetHeight;
-var w = (document.body.offsetWidth + menuW) / 2;
-var h = document.body.offsetHeight;
 
+// var w = (document.body.offsetWidth + menuW) / 2;
+// var h = document.body.offsetHeight;
+
+// var w = document.body.offsetWidth/1.2;
+// var h = document.body.offsetHeight * 1.3;
+
+var w = window.innerWidth / 1.5;
+var h = window.innerHeight / 1.7;
 
 //Original data
 var dataURL = "https://raw.githubusercontent.com/marcosd3souza/marcosd3souza.github.io/main/data/"
@@ -26,7 +29,7 @@ onDataChange()
 
 function onDataChange() {
 
-    d3.select("svg").remove();
+    d3.select("#graph").select("*").remove();
 
     var datasetName = document.querySelector('input[name="dataset"]:checked').value;
     var method = document.querySelector('input[name="method"]:checked').value;
