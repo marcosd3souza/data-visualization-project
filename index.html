@@ -4,8 +4,8 @@
 		<meta charset="utf-8">
 		<title>D3: Force layout</title>
 		
-		<!-- <script src="https://d3js.org/d3.v6.min.js"></script> -->
-		<script src="https://d3js.org/d3.v2.min.js" charset="utf-8"></script>
+		<script src="https://d3js.org/d3.v6.min.js"></script>
+		<!-- <script src="https://d3js.org/d3.v2.min.js" charset="utf-8"></script> -->
 		
 		
 		<link rel="stylesheet" type="text/css" href="./styles/tab.css"></style>
@@ -113,7 +113,7 @@
 				<div class="tab">
 					<button id="default" class="tablinks" onclick="showTabContent(event, 'graph')">Graph</button>
 					<button class="tablinks" onclick="showTabContent(event, 'heatmap')">HeatMap</button>
-					<button class="tablinks" onclick="showTabContent(event, 'features')">Features</button>
+					<button class="tablinks" onclick="showTabContent(event, 'sankey')">Features</button>
 				</div>
 
 				<div id="graph" class="tabcontent">
@@ -123,15 +123,15 @@
 				<div id="heatmap" class="tabcontent">					
 				</div>
 				  
-				<div id="features" class="tabcontent">
+				<div id="sankey" class="tabcontent">
 					<p>features map is building ...</p>
 				</div>
 			</div>
 
 		</div>
 		<script src="./scripts/tab.js"></script>
-		<script src="./scripts/graph.js"></script>
-		<script src="./scripts/heatmap.js"></script>
+		<script src="./scripts/draw.js"></script>
+		<!-- <script src="./scripts/heatmap.js"></script> -->
 
 		<div style="text-align: center;">
 			<p>&copy; 2021 https://github.com/marcosd3souza</p>
