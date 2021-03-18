@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Force layout</title>
+		<title>Clustering Data Visualization</title>
 		
 		<script src="https://d3js.org/d3.v6.min.js"></script>
 		<!-- <script src="https://d3js.org/d3.v2.min.js" charset="utf-8"></script> -->
@@ -12,8 +12,7 @@
 		<link rel="stylesheet" type="text/css" href="./styles/main.css"></style>
 
 		<div style="text-align: center;">
-			<h2>Projeto Visualização de Dados</h2>
-			<h4>Cin UFPE - 2020.2</h4>
+			<h2>Visualização de Clustering de Dados</h2>
 		</div>
 
 	</head>
@@ -25,7 +24,9 @@
 				</div>
 				
 				<div>
-					<p>Selecione o dataset</p>
+					<p><b>Selecione o dataset</b></p>
+
+					<p>Image</p>
 					
 					<input type="radio" checked name="dataset" id="warpAR10P" value="warpAR10P" onclick="onDataChange()">
 					<label for="warpAR10P">
@@ -45,31 +46,31 @@
 					<label for="pixraw10P">
 						pixraw10P (100x10000)
 					</label>
+
+					<p>Bio</p>
+
+					<input type="radio" name="dataset" id="Carcinom" value="Carcinom" onclick="onDataChange()">
+					<label for="Carcinom">
+						Carcinom (174x9182)
+					</label>
+
+					<br>
+
+					<input type="radio" name="dataset" id="TOX171" value="TOX171" onclick="onDataChange()">
+					<label for="TOX171">
+						TOX171 (171x5748)
+					</label>
+
+					<br>
+
+					<input type="radio" name="dataset" id="ProstateGE" value="ProstateGE" onclick="onDataChange()">
+					<label for="ProstateGE">
+						ProstateGE (102x5966)
+					</label>
 				</div>
 				
 				<div>
-					<p>Selecione o método de seleção/redução:</p>
-					
-					<input type="radio" name="method" id="PCA" value="PCA">
-					<label for="PCA">
-						PCA
-					</label>
-					
-					<br>
-					
-					<input type="radio" name="method" id="LDA" value="LDA">
-					<label for="LDA">
-						LDA
-					</label>
-					
-					<br>
-					
-					<input type="radio" name="method" id="TSNE" value="TSNE">
-					<label for="TSNE">
-						T-SNE
-					</label>
-					
-					<br>
+					<p><b>Selecione o método de seleção</b></p>
 					
 					<input type="radio" checked name="method" id="LS" value="LS" onclick="onDataChange()">
 					<label for="LS">
@@ -89,10 +90,17 @@
 					<label for="idetect">
 						i-detect
 					</label>
+
+					<br>
+
+					<input type="radio" name="method" id="GLSPFS" value="GLSPFS" onchange="onDataChange()">
+					<label for="GLSPFS">
+						GLSPFS
+					</label>
 				</div>
 				
 				<div>
-					<p>Selecione o número de componentes/features:</p>
+					<p><b>Selecione o número de features:</b></p>
 					
 					<input name="cutoff"
 						   type="range"
@@ -113,7 +121,7 @@
 				<div class="tab">
 					<button id="default" class="tablinks" onclick="showTabContent(event, 'graph')">Graph</button>
 					<button class="tablinks" onclick="showTabContent(event, 'heatmap')">HeatMap</button>
-					<button class="tablinks" onclick="showTabContent(event, 'sankey')">Features</button>
+					<!-- <button class="tablinks" onclick="showTabContent(event, 'sankey')">Features</button> -->
 				</div>
 
 				<div id="graph" class="tabcontent">
@@ -123,9 +131,9 @@
 				<div id="heatmap" class="tabcontent">					
 				</div>
 				  
-				<div id="sankey" class="tabcontent">
+				<!-- <div id="sankey" class="tabcontent">
 					<p>features map is building ...</p>
-				</div>
+				</div> -->
 			</div>
 
 		</div>
