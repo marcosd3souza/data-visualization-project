@@ -60,7 +60,8 @@ function getBestY(currentY) {
 }
 
 //Original data
-var dataURL = "https://raw.githubusercontent.com/marcosd3souza/marcosd3souza.github.io/main/data/"
+// var dataURL = "https://raw.githubusercontent.com/marcosd3souza/marcosd3souza.github.io/main/data/"
+var dataURL = "https://raw.githubusercontent.com/marcosd3souza/data-visualization-project/refs/heads/main/data/"
 
 onDataChange()
 
